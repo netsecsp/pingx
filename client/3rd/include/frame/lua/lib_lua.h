@@ -1,7 +1,10 @@
-﻿/*****************************************************************************
-Copyright (c) netsecsp 2012-2032, All rights reserved.
+// lib_lua.h : Implementation of lua symbol Exports.
+#ifndef __LIB_LUA_H__
+#define __LIB_LUA_H__
+/*****************************************************************************
+Copyright (c) 2012-2032, All rights reserved.
 
-Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated 07/05/2016
+Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated 07/01/2017
 http://asynframe.sf.net
 
 Redistribution and use in source and binary forms, with or without
@@ -29,23 +32,12 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import "IAsynFrame.idl";
+#include <idl/IAsynFrame.h>
 
-    cpp_quote("#pragma pack(push, 1)")
+#ifdef _LIB
+STDAPI Lua_CreateCommand( /*[in ]*/InstancesManager *lpInstancesManager, /*[in ]*/IUnknown *param1, /*[in ]*/uint64_t param2, /*[out]*/IOsCommand **ppOsCommand );
+#else
+STDAPI     CreateCommand( /*[in ]*/InstancesManager *lpInstancesManager, /*[in ]*/IUnknown *param1, /*[in ]*/uint64_t param2, /*[out]*/IOsCommand **ppOsCommand);
+#endif
 
-    /////////////////////////////////////////////////////////////////////////////
-    [
-        object,
-        uuid(1F4C098C-5615-4623-8EB0-64A012DC7DB4),
-        helpstring("ICrashExplorer Interface"),
-        pointer_default(unique)
-    ]
-    interface ICrashExplorer : IUnknown
-    {
-        HRESULT SetupThreadExceptTrapper();
-        /////////////////////////////////////////////////////////////////////////
-        HRESULT DumpStack( [in ]handle hExcptinfo, [in ]IAsynMessageEvents* events );
-        HRESULT Write( [in ]handle file, [in ]handle hExcptinfo, [in ]uint32_t type );
-    };
-
-    cpp_quote("#pragma pack(pop)")
+#endif//__LIB_SQLITE_H__
