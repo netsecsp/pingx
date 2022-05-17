@@ -55,11 +55,16 @@ public:
     bool Start(const std::string &host, uint32_t af, const char *DNS_uri)
     {
         m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, af, 0, IID_IAsynNetIoOperation, (void **)&m_spAsynIoOperation);
-        m_spAsynIoOperation->SetHost(STRING_from_string(host), TRUE);
-
-        m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
-
-        m_spAsynDnsResolver->Commit(m_spAsynIoOperation, 0);
+        if( m_spAsynIoOperation->SetHost(STRING_from_string(host), TRUE) == S_OK )
+        {// ipvx
+            printf("start to ping %s...\n", host.c_str());
+            m_spAsynFrame->CreateTimer(1, 0, 0, 0);
+        }
+        else
+        {
+            m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
+            m_spAsynDnsResolver->Commit(m_spAsynIoOperation, 0);
+        }
         return true;
     }
     void Shutdown()

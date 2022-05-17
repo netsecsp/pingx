@@ -63,7 +63,7 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated " STRING_UPDATETIME "\n");
     printf("http://asynframe.sf.net\n\n");
 
-    char *host = "www.baidu.com", ipvx = '4', *durl = "udp://*:53/";
+    char *host = "www.baidu.com", ipvx = '4', *durl = "udp://*:53/"; //tcp://*:53  http://119.29.29.29/d?dn=[host].&ip=[ip]&ttl=1
     for(int i = 1; i < argc; ++ i)
     {
         if( argv[i][0] == '-' )
