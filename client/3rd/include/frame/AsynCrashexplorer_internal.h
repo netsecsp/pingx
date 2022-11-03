@@ -1,4 +1,4 @@
-// Crashepr_internal.h: interface.
+// AsynCrashexplorer_internal.h: interface.
 //
 /////////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_CRASHEXPLORER_INTERNAL_H__88966194_6F5D_4303_8670_7EAE695A32B3__INCLUDED_)
@@ -39,42 +39,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif // _MSC_VER > 1000
 
 #include "AsynCore_internal.h"
-#include "asm/ICrashExplorer.h"
+#include "asm/IExceptionTrapper.h"
 NAMESPACE_BEGIN(asynsdk)
 
 /////////////////////////////////////////////////////////////////////////////////
-//ICrashExplorer(InstanceName)
-#define IN_CrashExplorer "com.app.crashexplorer"
-
-/////////////////////////////////////////////////////////////////////////////////
-typedef enum tag_ET_EXCEPTION_TYPE
-{
-    ET_SEH_EXCEPTION        = 0, //!< SEH exception.
-    ET_INVALID_PARAMETER,        //!< Invalid parameter exception (VS 2005 and later).
-    ET_NONCONTINUABLE_EXCEPTION, //!< Non continuable sofware exception.
-    ET_CPP_TERMINATE_CALL,       //!< C++ terminate() call.
-    ET_CPP_UNEXPECTED_CALL,      //!< C++ unexpected() call.
-    ET_CPP_PURE_CALL,            //!< C++ pure virtual function call (VS .NET and later).
-    ET_CPP_NEW_OPERATOR_ERROR,   //!< C++ new operator fault (VS .NET and later).
-    ET_CPP_SIGABRT,              //!< C++ SIGABRT signal (abort).
-    ET_CPP_SIGFPE,               //!< C++ SIGFPE signal (flotating point exception).
-    ET_CPP_SIGILL,               //!< C++ SIGILL signal (illegal instruction).
-    ET_CPP_SIGINT,               //!< C++ SIGINT signal (CTRL+C).
-    ET_CPP_SIGSEGV,              //!< C++ SIGSEGV signal (invalid storage access).
-    ET_CPP_SIGTERM,              //!< C++ SIGTERM signal (termination request).
-    ET_CPP_THROW,                //!< Throw C++ typed exception.
-    ET_CPP_SECURITY_EXCEPTION,   //!< Previous security exception filter.
-    ET_MANUAL_EXCEPTION          //!< Manual report .
-} ET_EXCEPTION_TYPE;
-
-typedef struct tag_SI_STACKFRAME_INFO
-{
-    uint32_t size;               //!< Size of this structure in bytes; should be initialized before using.
-    uint32_t displacement;
-    void    *base;
-    void    *addr;
-    uint32_t line;
-} SI_STACKFRAME_INFO;
+//IExceptionTrapper(InstanceName)
+#define IN_CrashExplorer "com.asynframe.crashexplorer"
 
 NAMESPACE_END(asynsdk)
 

@@ -6,9 +6,9 @@
 
 
  /* File created by MIDL compiler version 8.00.0603 */
-/* at Tue Apr 26 17:24:56 2022
+/* at Thu Oct 20 23:15:01 2022
  */
-/* Compiler settings for ICrashExplorer.idl:
+/* Compiler settings for IExceptionTrapper.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.00.0603 
     protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
@@ -67,7 +67,7 @@ typedef IID CLSID;
 
 #endif !_MIDL_USE_GUIDDEF_
 
-MIDL_DEFINE_GUID(IID, IID_ICrashExplorer,0x1F4C098C,0x5615,0x4623,0x8E,0xB0,0x64,0xA0,0x12,0xDC,0x7D,0xB4);
+MIDL_DEFINE_GUID(IID, IID_IExceptionTrapper,0x1F4C098C,0x5615,0x4623,0x8E,0xB0,0x64,0xA0,0x12,0xDC,0x7D,0xB4);
 
 #undef MIDL_DEFINE_GUID
 
