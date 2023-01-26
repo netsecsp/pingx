@@ -53,7 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #pragma comment(lib,"asynframe_lib.lib")
 #endif
-STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents* param1, /*[in ]*/IKeyvalSetter* param2 );
+STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]*/IUnknown *param2 );
 STDAPI_(extern HRESULT) Destory();
 STDAPI_(extern InstancesManager *) GetInstancesManager();
 
@@ -93,10 +93,14 @@ int _tmain(int argc, _TCHAR *argv[])
     {
         InstancesManager *lpInstancesManager = GetInstancesManager();
 
-        CComPtr<IAsynFrameThread> spAsynFrameThread;
-        lpInstancesManager->NewInstance(0, 0, IID_IAsynFrameThread, (void **)&spAsynFrameThread);
+        if( lpInstancesManager->Require(STRING_from_string(IN_AsynNetwork), 0) != S_OK )
+        {
+            printf("can't load plugin: %s\n", IN_AsynNetwork);
+            break;
+        }
 
-        lpInstancesManager->Require(STRING_from_string(IN_AsynNetwork), 0);
+        CComPtr<IAsynFrameThread> spAsynFrameThread;
+        lpInstancesManager->NewInstance(0, 0, IID_IAsynFrameThread, (void**)&spAsynFrameThread);
 
         CComPtr<IAsynNetwork    > spAsynNetwork;
         lpInstancesManager->GetInstance(STRING_from_string(IN_AsynNetwork), IID_IAsynNetwork, (void **)&spAsynNetwork);
@@ -105,7 +109,7 @@ int _tmain(int argc, _TCHAR *argv[])
         if( pEvent->Start(host, ipvx=='4'? AF_INET : 23, durl) )
         {
             while( WAIT_OBJECT_0 != WaitForSingleObject(pEvent->m_hNotify, 0) &&
-                   kbhit() == 0 )
+                   _kbhit() == 0 )
             {
                 Sleep(100); //0.1sec
             }

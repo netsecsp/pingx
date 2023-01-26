@@ -57,9 +57,9 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
             return S_OK;
         }
 
-        CComPtr<IStringsStack> lstIps;
-        lpAsynIoOperation->GetCompletedObject(1, IID_IStringsStack, (void **)&lstIps);
-        asynsdk::CStringSetter ipvx;
+        CComPtr< IStringStack> lstIps;
+        lpAsynIoOperation->GetCompletedObject(1, IID_IStringStack, (void**)&lstIps);
+        asynsdk::CStringSetter ipvx(1);
         lstIps->Pop(&ipvx);
         spAsynIoOperation->SetPeerAddress(0,&STRING_from_string(ipvx.m_val), 0, 0, 0);
         lstIps->Get(&host);

@@ -1,4 +1,4 @@
-log4cplus.rootLogger=TRACE,  ROLLING_LOG_FILE
+log4cplus.rootLogger=TRACE, ROLLING_LOG_FILE
 
 #######################################################################
 # STDOUT                                                              #
