@@ -80,11 +80,10 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
 
 HRESULT CAsynPingHandler::OnTimer(uint64_t lparam1, uint64_t lparam2)
 {
-    CComPtr<IAsynNetIoOperation> spAsynIoOperation;
-    m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, 0, 0, IID_IAsynNetIoOperation, (void **)&spAsynIoOperation);
-    m_spAsynFrameThread->BindAsynIoOperation(m_spAsynIoOperation, spAsynIoOperation, BM_Oneway | BM_OsAddr, 0);
+    m_spAsynFrame->CreateTimer(1, ++ lparam2, 1000/*1 sec*/, 0);
 
-    m_spAsynFrame->CreateTimer(1, ++ lparam2, 1000, 0);
+    CComPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, 0, 0, IID_IAsynNetIoOperation, (void **)&spAsynIoOperation);
+    m_spAsynFrameThread->BindAsynIoOperation(m_spAsynIoOperation, spAsynIoOperation, BM_Oneway | BM_OsAddr, 0); //单向绑定 | 直接引用地址
 
     spAsynIoOperation->SetOpParam1(lparam2);
     m_spAsynRawSocket->Write(spAsynIoOperation, 0/*ttl*/);
