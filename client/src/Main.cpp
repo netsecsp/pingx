@@ -2,7 +2,7 @@
 Copyright (c) netsecsp 2012-2032, All rights reserved.
 
 Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated 05/01/2022
-http://asynframe.sf.net
+http://pingx.sf.net
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -57,15 +57,27 @@ STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]
 STDAPI_(extern HRESULT) Destory();
 STDAPI_(extern InstancesManager *) GetInstancesManager();
 
+static void ShowUsage(const char *name)
+{
+    printf("usage: %s -4/6 host -d=url\n\texample: %s -4 www.baidu.com\n\n", name, name);
+}
+
 int _tmain(int argc, _TCHAR *argv[])
 {
     printf("Copyright (c) netsecsp 2012-2032, All rights reserved.\n");
     printf("Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated " STRING_UPDATETIME "\n");
-    printf("http://asynframe.sf.net\n\n");
+    printf("http://pingx.sf.net\n\n");
 
     char *host = "www.baidu.com", ipvx = '4', *durl = "udp://*:53/"; //tcp://*:53  http://119.29.29.29/d?dn=[host].&ip=[ip]&ttl=1
     for(int i = 1; i < argc; ++ i)
     {
+        if( strcmp(argv[i], "/?") == 0 || 
+            strcmp(argv[i], "--help") == 0 )
+        {
+            ShowUsage(argv[0]);
+            return 0;
+        }
+
         if( argv[i][0] == '-' )
         {
             if( memcmp(argv[i], "-d=", 3) == 0 )

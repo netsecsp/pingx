@@ -2,7 +2,7 @@
 Copyright (c) 2012-2032, All rights reserved.
 
 Author: Shengqian Yang, netsecsp@hotmail.com, China, last updated 05/01/2022
-http://asynframe.sf.net
+http://pingx.sf.net
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
