@@ -57,9 +57,21 @@ STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]
 STDAPI_(extern HRESULT) Destory();
 STDAPI_(extern InstancesManager *) GetInstancesManager();
 
-static void ShowUsage(const char *name)
+static void ShowUsage(std::string name)
 {
-    printf("usage: %s -4/6 host -d=url\n\texample: %s -4 www.baidu.com\n\n", name, name);
+    std::string::size_type i = name.find_last_of("/\\");
+    if( i != std::string::npos )
+        name.erase(0, i + 1);
+
+    printf("  Usage: %s [-4|6] [-i TTL] [-dns URL] host\n", name.c_str());
+    printf("Options:\n");
+    printf("      -4 Enforce IPv4\n");
+    printf("      -6 Enforce IPv6\n");
+    printf("      -i TTL Time to live\n");
+    printf("      -dns URL[protocol://[host][:port]/uri] Use DNS on given url\n\n");
+    printf("example: %s www.test.com -6 -dns \"udp://*:53\"\n", name.c_str());
+    printf("         %s www.test.com -6 -dns \"tcp://*:53\"\n", name.c_str());
+    printf("         %s www.test.com -4 -dns \"http://119.29.29.29/d?dn=[host].&ip=[ip]&ttl=1\"\n\n", name.c_str());
 }
 
 int _tmain(int argc, _TCHAR *argv[])
@@ -68,31 +80,51 @@ int _tmain(int argc, _TCHAR *argv[])
     printf("Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated " STRING_UPDATETIME "\n");
     printf("http://pingx.sf.net\n\n");
 
-    char *host = "www.baidu.com", ipvx = '4', *durl = "udp://*:53/"; //tcp://*:53  http://119.29.29.29/d?dn=[host].&ip=[ip]&ttl=1
+    char ipvx = AF_INET, nttl = 0, *host = 0, *durl = "udp://*:53/";
     for(int i = 1; i < argc; ++ i)
     {
         if( strcmp(argv[i], "/?") == 0 || 
             strcmp(argv[i], "--help") == 0 )
         {
-            ShowUsage(argv[0]);
-            return 0;
+            host = 0;
+            break;
         }
 
         if( argv[i][0] == '-' )
         {
-            if( memcmp(argv[i], "-d=", 3) == 0 )
+            if( strcmp(argv[i], "-4") == 0 )
             {
-                durl = argv[i]+ 3;
+                ipvx = AF_INET;
+                continue;
             }
-            else
+            if( strcmp(argv[i], "-6") == 0 )
             {
-                ipvx = argv[i][1];
+                ipvx = 23;
+                continue;
+            }
+            if( strcmp(argv[i], "-i") == 0 )
+            {
+                if( argc > ++ i)
+                    nttl = atoi(argv[i]);
+                continue;
+            }
+            if( strcmp(argv[i], "-dns") == 0 )
+            {
+                if( argc > ++ i)
+                    durl = argv[i];
+                continue;
             }
         }
         else
         {
             host = argv[i];
         }
+    }
+
+    if(!host )
+    {
+        ShowUsage(argv[0]);
+        return 0;
     }
 
     if( Initialize(NULL, NULL) != NO_ERROR )
@@ -112,16 +144,16 @@ int _tmain(int argc, _TCHAR *argv[])
         }
 
         CComPtr<IAsynFrameThread> spAsynFrameThread;
-        lpInstancesManager->NewInstance(0, 0, IID_IAsynFrameThread, (void**)&spAsynFrameThread);
+        lpInstancesManager->NewInstance(0, asynsdk::TC_Iocp, IID_IAsynFrameThread, (void**)&spAsynFrameThread);
 
         CComPtr<IAsynNetwork    > spAsynNetwork;
         lpInstancesManager->GetInstance(STRING_from_string(IN_AsynNetwork), IID_IAsynNetwork, (void **)&spAsynNetwork);
 
-        std::unique_ptr<CAsynPingHandler> pEvent(new CAsynPingHandler(spAsynFrameThread, spAsynNetwork));
-        if( pEvent->Start(host, ipvx=='4'? AF_INET : 23, durl) )
+        std::unique_ptr<CAsynPingHandler> pEvent(new CAsynPingHandler(spAsynFrameThread, spAsynNetwork, ipvx, nttl));
+        if( pEvent->Start(host, durl) )
         {
             while( WAIT_OBJECT_0 != WaitForSingleObject(pEvent->m_hNotify, 0) &&
-                   _kbhit() == 0 )
+                  _kbhit() == 0 )
             {
                 Sleep(100); //0.1sec
             }

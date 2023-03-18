@@ -36,34 +36,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CAsynPingHandler : public asynsdk::asyn_message_events_impl
 {
 public:
-    CAsynPingHandler(IAsynFrameThread *lpAsynFrameThread, IAsynNetwork *lpAsynNetwork)
+    CAsynPingHandler(IAsynFrameThread *lpAsynFrameThread, IAsynNetwork *lpAsynNetwork, uint32_t iaf, uint32_t ttl)
     {
+        m_spAsynNetwork     = lpAsynNetwork;
         m_spAsynFrameThread = lpAsynFrameThread;
-        CreateAsynFrame(lpAsynFrameThread, 0, &m_spAsynFrame);
-        m_spAsynNetwork = lpAsynNetwork;
-        m_spAsynNetwork->CreateAsynRawSocket(1, &m_spAsynRawSocket);
-        m_spAsynRawSocket->Open(lpAsynFrameThread, 0, 0, 0);
-        m_hNotify = CreateEvent(NULL, TRUE, FALSE, NULL);
+        CreateAsynFrame(lpAsynFrameThread, 1, &m_spAsynFrame);
+        m_hNotify = CreateEvent(NULL, TRUE, FALSE, 0);
+        m_ttl = ttl;
+        m_iaf = iaf;
     }
 
 public: // interface of asyn_message_events_impl
     DECLARE_ASYN_MESSAGE_MAP(CAsynPingHandler)
-    HRESULT OnIomsgNotify( uint64_t lParam1, uint64_t lParam2, IAsynIoOperation *lpAsynIoOperation );
+    HRESULT OnIomsgNotify( uint64_t lParam1, uint64_t lParam2, IAsynIoOperation*  lpAsynIoOperation );
+    HRESULT OnQueryResult( uint64_t lparam1, uint64_t lparam2, IAsynIoOperation** ppAsynIoOperation );
     HRESULT OnTimer( uint64_t lParam1, uint64_t lParam2 );
 
 public:
-    bool Start(const std::string &host, uint32_t af, const char *DNS_uri)
+    bool Start(const std::string &host, const char *DNS_uri)
     {
-        m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, af, 0, IID_IAsynNetIoOperation, (void **)&m_spAsynIoOperation);
-        if( m_spAsynIoOperation->SetHost(STRING_from_string(host), TRUE) == S_OK )
+        m_spAsynNetwork->CreateAsynRawSocket(1/*icmp*/, &m_spAsynRawSocket);
+        m_spAsynRawSocket->Open(m_spAsynFrameThread, 0/*support ipv4/ipv6*/, 0, 0);
+
+        CObjPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynFrame->Pop(0, (IAsynIoOperation**)&spAsynIoOperation.p);
+        if( spAsynIoOperation->SetHost(STRING_from_string(host), TRUE) == S_OK )
         {// ipvx
             printf("start to ping %s...\n", host.c_str());
+            m_ipvx = host;
+            m_spAsynFrame->Add(spAsynIoOperation, 0);
             m_spAsynFrame->CreateTimer(1, 0, 0, 0);
         }
         else
-        {
+        {// reserver host
             m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
-            m_spAsynDnsResolver->Commit(m_spAsynIoOperation, 0);
+            m_spAsynDnsResolver->Commit(spAsynIoOperation, 0);
         }
         return true;
     }
@@ -74,13 +80,15 @@ public:
     }
 
 public:
-    CComPtr<IAsynRawSocket     > m_spAsynRawSocket;
-    CComPtr<IAsynNetwork       > m_spAsynNetwork;
-    CComPtr<IAsynFrame         > m_spAsynFrame;
-    CComPtr<IAsynDnsResolver   > m_spAsynDnsResolver;
-    CComPtr<IAsynNetIoOperation> m_spAsynIoOperation;
-    CComPtr<IAsynFrameThread   > m_spAsynFrameThread;
-    HANDLE m_hNotify;
+    CComPtr<IAsynRawSocket  > m_spAsynRawSocket;
+    CComPtr<IAsynNetwork    > m_spAsynNetwork;
+    CComPtr<IAsynFrame      > m_spAsynFrame;
+    CComPtr<IAsynDnsResolver> m_spAsynDnsResolver;
+    CComPtr<IAsynFrameThread> m_spAsynFrameThread;
+    std::string m_ipvx;
+    HANDLE   m_hNotify;
+    uint32_t m_ttl;
+    uint32_t m_iaf;
 };
 
 #endif
