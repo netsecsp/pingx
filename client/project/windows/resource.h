@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by exe_aneta.rc
+// Used by exe_pingx.rc
 //
 #define IDR_Application       100
 
