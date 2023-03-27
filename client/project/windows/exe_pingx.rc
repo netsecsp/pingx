@@ -60,7 +60,7 @@ IDR_Application           ICON    DISCARDABLE     "exe_pingx.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,4,4
+ FILEVERSION 1,4,5,5
  PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -78,7 +78,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "http://pingx.sf.net"
             VALUE "FileDescription", "pingx"
-            VALUE "FileVersion", "1, 4, 4, 4"
+            VALUE "FileVersion", "1, 4, 5, 5"
             VALUE "InternalName", "pingx"
             VALUE "LegalCopyright", "Copyright (c) netsecsp 2012-2032"
             VALUE "OriginalFilename", "pingx.exe"

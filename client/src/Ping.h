@@ -41,9 +41,13 @@ public:
         m_spAsynNetwork     = lpAsynNetwork;
         m_spAsynFrameThread = lpAsynFrameThread;
         CreateAsynFrame(lpAsynFrameThread, 1, &m_spAsynFrame);
-        m_hNotify = CreateEvent(NULL, TRUE, FALSE, 0);
+        m_hNotify = ::CreateEvent(NULL, TRUE, FALSE, 0);
         m_ttl = ttl;
         m_iaf = iaf;
+    }
+    virtual ~CAsynPingHandler()
+    {
+        ::CloseHandle(m_hNotify);
     }
 
 public: // interface of asyn_message_events_impl
@@ -56,10 +60,10 @@ public:
     bool Start(const std::string &host, const char *DNS_uri)
     {
         m_spAsynNetwork->CreateAsynRawSocket(1/*icmp*/, &m_spAsynRawSocket);
-        m_spAsynRawSocket->Open(m_spAsynFrameThread, 0/*support ipv4/ipv6*/, 0, 0);
+        m_spAsynRawSocket->Open(m_spAsynFrameThread, 0/*0 can support ipv4/ipv6*/, 0, 0);
 
         CObjPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynFrame->Pop(0, (IAsynIoOperation**)&spAsynIoOperation.p);
-        if( spAsynIoOperation->SetHost(STRING_from_string(host), TRUE) == S_OK )
+        if( spAsynIoOperation->SetHost(STRING_from_string(host), 1) == S_OK )
         {// ipvx
             printf("start to ping %s...\n", host.c_str());
             m_ipvx = host;

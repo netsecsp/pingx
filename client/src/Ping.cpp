@@ -63,7 +63,7 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
         spAsynIoOperation->GetHost(&host );
         if( lErrorCode != NO_ERROR )
         {
-            printf("can't to resolver %*s, error=%d\n", host.len, host.ptr, lErrorCode);
+            printf("resolver %.*s, error=%d\n", host.len, host.ptr, lErrorCode);
             SetEvent(m_hNotify);
             return S_OK;
         }
@@ -73,7 +73,7 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
         asynsdk::CStringSetterRef ipvx(1,&m_ipvx);
         lstIps->Pop(&ipvx);
         lstIps->Get(&host);
-        printf("start to ping %*s[%s]...\n", host.len, host.ptr, m_ipvx.c_str());
+        printf("start to ping %.*s[%s]...\n", host.len, host.ptr, m_ipvx.c_str());
         m_spAsynFrame->CreateTimer(1, 0, 0, 0);
         return  m_spAsynFrame->Add(lpAsynIoOperation, 0);
     }
