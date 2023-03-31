@@ -79,12 +79,15 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
     }
     else
     {
-        asynsdk::CStringSetter host(1);
-        spAsynIoOperation->GetPeerAddress(&host, 0, 0, 0);
+        asynsdk::CStringSetter ipvx(1);
+        spAsynIoOperation->GetPeerAddress(&ipvx, 0, 0, 0); if( ipvx.m_val.empty()) ipvx.m_val = m_ipvx;
 
         if( lErrorCode == NO_ERROR )
         {
-            printf("from %s: seq=%lld ttl=%lld rtt=%lldms\n", host.m_val.c_str(), lparam1, lparam2 >> 56, (lparam2 << 8) >> 8);
+            if( m_iaf == 2 )
+                printf("from %s: seq=%lld ttl=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, lparam2 >> 56, (lparam2 << 8) >> 8); //ipv4
+            else
+                printf("from %s: seq=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, (lparam2 << 8) >> 8); //ipv6
         }
         else
         {
@@ -110,9 +113,9 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
                      message = 0;
             }
             if( message )
-                printf("from %s: seq=%lld %s\n", host.m_val.c_str(), lparam1, message);
+                printf("from %s: seq=%lld %s\n", ipvx.m_val.c_str(), lparam1, message);
             else
-                printf("from %s: seq=%lld error=%d\n", host.m_val.c_str(), lparam1, lErrorCode);
+                printf("from %s: seq=%lld error=%d\n", ipvx.m_val.c_str(), lparam1, lErrorCode);
         }
 
         m_spAsynFrame->CreateTimer(lparam1 + 1, 0, lErrorCode==ERROR_TIMEOUT || lErrorCode==IP_REQ_TIMED_OUT? 0 : 1000, 0);

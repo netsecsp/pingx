@@ -72,7 +72,10 @@ public:
         }
         else
         {// reserver host
-            m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
+            if( DNS_uri )
+                m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
+            else
+                m_spAsynNetwork->CreateAsynDnsResolver(asynsdk::STRING_EX::null, 0, asynsdk::STRING_EX::null, 0, &m_spAsynDnsResolver);
             m_spAsynDnsResolver->Commit(spAsynIoOperation, 0);
         }
         return true;

@@ -71,6 +71,7 @@ static void ShowUsage(std::string name)
     printf("      -dns URL[protocol://[host][:port]/uri] Use DNS on given url\n\n");
     printf("example: %s www.test.com -6 -dns \"udp://*:53\"\n", name.c_str());
     printf("         %s www.test.com -6 -dns \"tcp://*:53\"\n", name.c_str());
+    printf("         %s www.test.com -4 -dns nil\n", name.c_str());
     printf("         %s www.test.com -4 -dns \"http://119.29.29.29/d?dn=[host].&ip=[ip]&ttl=1\"\n\n", name.c_str());
 }
 
@@ -111,7 +112,7 @@ int _tmain(int argc, _TCHAR *argv[])
             if( strcmp(argv[i], "-dns") == 0 )
             {
                 if( argc > ++ i)
-                    durl = argv[i];
+                    durl = strcmp(argv[i], "nil")==0? 0 : argv[i];
                 continue;
             }
         }
