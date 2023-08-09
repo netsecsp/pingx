@@ -65,18 +65,20 @@ public:
         CObjPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynFrame->Pop(0, (IAsynIoOperation**)&spAsynIoOperation.p);
         if( spAsynIoOperation->SetHost(STRING_from_string(host), 1) == S_OK )
         {// ipvx
-            printf("start to ping %s...\n", host.c_str());
-            m_ipvx = host;
+            spAsynIoOperation->GetPeerAddress(0, 0, 0, &m_iaf); //fix m_iaf
+            STRING ipvx; spAsynIoOperation->GetHost(&ipvx );
+            m_ipvx = string_from_STRING(ipvx); //fix m_ipvx
+            printf("start to ping %s...\n", m_ipvx.c_str());
             m_spAsynFrame->Add(spAsynIoOperation, 0);
             m_spAsynFrame->CreateTimer(1, 0, 0, 0);
         }
         else
         {// reserver host
             if( DNS_uri )
-                m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, STRING_from_string(DNS_uri), 0, &m_spAsynDnsResolver);
+                m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, 0, STRING_from_string(DNS_uri), &m_spAsynDnsResolver);
             else
-                m_spAsynNetwork->CreateAsynDnsResolver(asynsdk::STRING_EX::null, 0, asynsdk::STRING_EX::null, 0, &m_spAsynDnsResolver);
-            m_spAsynDnsResolver->Commit(spAsynIoOperation, 0);
+                m_spAsynNetwork->CreateAsynDnsResolver(asynsdk::STRING_EX::null , 0, 0, asynsdk::STRING_EX::null, &m_spAsynDnsResolver);
+            m_spAsynDnsResolver->Queryres(0, 0, spAsynIoOperation);
         }
         return true;
     }

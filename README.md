@@ -1,4 +1,4 @@
-> asynframe-sdk_v1.4.6-20230331.zip is from https://github.com/netsecsp/asynframe  
+> asynframe-sdk_v1.5.0-20230808.zip is from https://github.com/netsecsp/asynframe  
 
 # pingx.exe 
 > supports IPv4/IPv6 ping client program under windows  

@@ -72,8 +72,9 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
         lpAsynIoOperation->GetCompletedObject(1, IID_IStringStack, (void**)&lstIps);
         asynsdk::CStringSetterRef ipvx(1,&m_ipvx);
         lstIps->Pop(&ipvx);
-        lstIps->Get(&host);
-        printf("start to ping %.*s[%s]...\n", host.len, host.ptr, m_ipvx.c_str());
+        STRING real;
+        lstIps->Get(&real); if( real.len == 0) real = host;
+        printf("start to ping %.*s[%s]...\n", real.len, real.ptr, m_ipvx.c_str());
         m_spAsynFrame->CreateTimer(1, 0, 0, 0);
         return  m_spAsynFrame->Add(lpAsynIoOperation, 0);
     }
@@ -85,9 +86,9 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
         if( lErrorCode == NO_ERROR )
         {
             if( m_iaf == 2 )
-                printf("from %s: seq=%lld ttl=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, lparam2 >> 56, (lparam2 << 8) >> 8); //ipv4
+                printf("Reply from %s seq=%lld ttl=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, lparam2 >> 56, (lparam2 << 8) >> 8); //ipv4
             else
-                printf("from %s: seq=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, (lparam2 << 8) >> 8); //ipv6
+                printf("Reply from %s seq=%lld rtt=%lldms\n", ipvx.m_val.c_str(), lparam1, (lparam2 << 8) >> 8); //ipv6
         }
         else
         {
@@ -113,9 +114,13 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
                      message = 0;
             }
             if( message )
-                printf("from %s: seq=%lld %s\n", ipvx.m_val.c_str(), lparam1, message);
+            {
+                printf("Reply from %s seq=%lld %s\n", ipvx.m_val.c_str(), lparam1, message);
+            }
             else
-                printf("from %s: seq=%lld error=%d\n", ipvx.m_val.c_str(), lparam1, lErrorCode);
+            {
+                printf("Reply from %s seq=%lld errno=%d\n", ipvx.m_val.c_str(), lparam1, lErrorCode);
+            }
         }
 
         m_spAsynFrame->CreateTimer(lparam1 + 1, 0, lErrorCode==ERROR_TIMEOUT || lErrorCode==IP_REQ_TIMED_OUT? 0 : 1000, 0);
