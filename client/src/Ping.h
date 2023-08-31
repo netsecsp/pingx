@@ -63,13 +63,13 @@ public:
         m_spAsynRawSocket->Open(m_spAsynFrameThread, 0/*0 can support ipv4/ipv6*/, 0, 0);
 
         CObjPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynFrame->Pop(0, (IAsynIoOperation**)&spAsynIoOperation.p);
-        if( spAsynIoOperation->SetHost(STRING_from_string(host), 1) == S_OK )
+        if( spAsynIoOperation->SetHost(STRING_from_string(host), m_iaf) == S_OK )
         {// ipvx
             spAsynIoOperation->GetPeerAddress(0, 0, 0, &m_iaf); //fix m_iaf
             STRING ipvx; spAsynIoOperation->GetHost(&ipvx );
+            m_spAsynFrame->Add(spAsynIoOperation, 0);
             m_ipvx = string_from_STRING(ipvx); //fix m_ipvx
             printf("start to ping %s...\n", m_ipvx.c_str());
-            m_spAsynFrame->Add(spAsynIoOperation, 0);
             m_spAsynFrame->CreateTimer(1, 0, 0, 0);
         }
         else
@@ -78,7 +78,7 @@ public:
                 m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, 0, STRING_from_string(DNS_uri), &m_spAsynDnsResolver);
             else
                 m_spAsynNetwork->CreateAsynDnsResolver(asynsdk::STRING_EX::null , 0, 0, asynsdk::STRING_EX::null, &m_spAsynDnsResolver);
-            m_spAsynDnsResolver->Queryres(0, 0, spAsynIoOperation);
+            m_spAsynDnsResolver->Queryres(0, m_iaf==AF_INET? 0 : 1, spAsynIoOperation);
         }
         return true;
     }

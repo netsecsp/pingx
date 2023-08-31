@@ -51,7 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #pragma comment(lib, "asyncore_dll.lib")
 #else
-#pragma comment(lib,"asynframe_lib.lib")
+#pragma comment(lib, "asynframe-MT_lib.lib")
 #endif
 STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]*/IUnknown *param2 );
 STDAPI_(extern HRESULT) Destory();
