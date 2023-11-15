@@ -135,6 +135,6 @@ HRESULT CAsynPingHandler::OnTimer(uint64_t lparam1, uint64_t lparam2)
 
     spAsynIoOperation->SetPeerAddress(0,&STRING_from_string(m_ipvx), 0, 0, 0);
     spAsynIoOperation->SetOpParam1(lparam1);
-    m_spAsynRawSocket->Write(spAsynIoOperation, m_ttl/*ttl*/);
+    m_spDataTransmit->Write(spAsynIoOperation, 0, m_ttl/*ttl*/);
     return S_OK;
 }

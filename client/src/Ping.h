@@ -59,8 +59,10 @@ public: // interface of asyn_message_events_impl
 public:
     bool Start(const std::string &host, const char *DNS_uri)
     {
-        m_spAsynNetwork->CreateAsynRawSocket(1/*icmp*/, &m_spAsynRawSocket);
-        m_spAsynRawSocket->Open(m_spAsynFrameThread, 0/*0 can support ipv4/ipv6*/, 0, 0);
+        CComPtr<IAsynRawSocket> spAsynRawSocket; m_spAsynNetwork->CreateAsynRawSocket(1/*icmp*/, &spAsynRawSocket);
+        spAsynRawSocket->QueryInterface(IID_IDataTransmit, (void **)&m_spDataTransmit);
+
+        spAsynRawSocket->Open(m_spAsynFrameThread, 0/*0 can support ipv4/ipv6*/, 0, 0);
 
         CObjPtr<IAsynNetIoOperation> spAsynIoOperation; m_spAsynFrame->Pop(0, (IAsynIoOperation**)&spAsynIoOperation.p);
         if( spAsynIoOperation->SetHost(STRING_from_string(host), m_iaf) == S_OK )
@@ -89,7 +91,7 @@ public:
     }
 
 public:
-    CComPtr<IAsynRawSocket  > m_spAsynRawSocket;
+    CComPtr<IDataTransmit   > m_spDataTransmit;
     CComPtr<IAsynNetwork    > m_spAsynNetwork;
     CComPtr<IAsynFrame      > m_spAsynFrame;
     CComPtr<IAsynDnsResolver> m_spAsynDnsResolver;
