@@ -1,7 +1,7 @@
 /*****************************************************************************
 Copyright (c) netsecsp 2012-2032, All rights reserved.
 
-Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated 05/01/2022
+Developer: Shengqian Yang, from China, E-mail: netsecsp@hotmail.com, last updated 01/15/2024
 http://pingx.sf.net
 
 Redistribution and use in source and binary forms, with or without
@@ -112,7 +112,7 @@ int _tmain(int argc, _TCHAR *argv[])
             if( strcmp(argv[i], "-dns") == 0 )
             {
                 if( argc > ++ i)
-                    durl = strcmp(argv[i], "nil")==0? 0 : argv[i];
+                    durl = argv[i];
                 continue;
             }
         }
@@ -145,10 +145,10 @@ int _tmain(int argc, _TCHAR *argv[])
         }
 
         CComPtr<IAsynFrameThread> spAsynFrameThread;
-        lpInstancesManager->NewInstance(0, asynsdk::TC_Iocp, IID_IAsynFrameThread, (void**)&spAsynFrameThread);
+        lpInstancesManager->NewInstance(0, asynsdk::TC_Iocp, IID_IAsynFrameThread, (IUnknown**)&spAsynFrameThread);
 
         CComPtr<IAsynNetwork    > spAsynNetwork;
-        lpInstancesManager->GetInstance(STRING_from_string(IN_AsynNetwork), IID_IAsynNetwork, (void **)&spAsynNetwork);
+        lpInstancesManager->GetInstance(STRING_from_string(IN_AsynNetwork), IID_IAsynNetwork, (IUnknown **)&spAsynNetwork);
 
         std::unique_ptr<CAsynPingHandler> pEvent(new CAsynPingHandler(spAsynFrameThread, spAsynNetwork, ipvx, nttl));
         if( pEvent->Start(host, durl) )

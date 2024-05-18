@@ -3,7 +3,7 @@
 /*****************************************************************************
 Copyright (c) 2012-2032, All rights reserved.
 
-Author: Shengqian Yang, netsecsp@hotmail.com, China, last updated 05/01/2022
+Author: Shengqian Yang, netsecsp@hotmail.com, China, last updated 01/15/2024
 http://pingx.sf.net
 
 Redistribution and use in source and binary forms, with or without
@@ -76,10 +76,7 @@ public:
         }
         else
         {// reserver host
-            if( DNS_uri )
-                m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, 0, STRING_from_string(DNS_uri), &m_spAsynDnsResolver);
-            else
-                m_spAsynNetwork->CreateAsynDnsResolver(asynsdk::STRING_EX::null , 0, 0, asynsdk::STRING_EX::null, &m_spAsynDnsResolver);
+            m_spAsynNetwork->CreateAsynDnsResolver(STRING_from_string("dns"), 0, 0, DNS_uri==0? asynsdk::STRING_EX::null : STRING_from_string(DNS_uri), &m_spAsynDnsResolver);
             m_spAsynDnsResolver->Queryres(0, m_iaf==AF_INET? 0 : 1, spAsynIoOperation);
         }
         return true;

@@ -1,7 +1,7 @@
 /*****************************************************************************
 Copyright (c) 2012-2032, All rights reserved.
 
-Author: Shengqian Yang, netsecsp@hotmail.com, China, last updated 05/01/2022
+Author: Shengqian Yang, netsecsp@hotmail.com, China, last updated 01/15/2024
 http://pingx.sf.net
 
 Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ END_ASYN_MESSAGE_MAP()
 HRESULT CAsynPingHandler::OnQueryResult( uint64_t lparam1, uint64_t lparam2, IAsynIoOperation** ppAsynIoOperation )
 {
     if( lparam1 == (uint64_t)(m_spAsynFrame.p))
-        return m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, m_iaf, 0, IID_IAsynIoOperation, (void**)ppAsynIoOperation);
+        return m_spAsynNetwork->CreateAsynIoOperation(m_spAsynFrame, m_iaf, 0, IID_IAsynIoOperation, (IUnknown**)ppAsynIoOperation);
     else
         return E_NOTIMPL;
 }
@@ -69,7 +69,7 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
         }
 
         CComPtr< IStringStack > lstIps;
-        lpAsynIoOperation->GetCompletedObject(1, IID_IStringStack, (void**)&lstIps);
+        lpAsynIoOperation->GetCompletedObject(1, IID_IStringStack, (IUnknown**)&lstIps);
         asynsdk::CStringSetterRef ipvx(1,&m_ipvx);
         lstIps->Pop(&ipvx);
         STRING real;
@@ -123,7 +123,7 @@ HRESULT CAsynPingHandler::OnIomsgNotify( uint64_t lparam1, uint64_t lparam2, IAs
             }
         }
 
-        m_spAsynFrame->CreateTimer(lparam1 + 1, 0, lErrorCode==ERROR_TIMEOUT || lErrorCode==IP_REQ_TIMED_OUT? 0 : 1000, 0);
+        m_spAsynFrame->CreateTimer((uint32_t)lparam1 + 1, 0, lErrorCode==ERROR_TIMEOUT || lErrorCode==IP_REQ_TIMED_OUT? 0 : 1000, 0);
         return  m_spAsynFrame->Add(lpAsynIoOperation, 0);
     }
 }
