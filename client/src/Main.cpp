@@ -55,7 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]*/IUnknown *param2 );
 STDAPI_(extern HRESULT) Destory();
-STDAPI_(extern InstancesManager *) GetInstancesManager();
+STDAPI_(extern InstancesManager*) GetInstancesManager();
 
 static void ShowUsage(std::string name)
 {
