@@ -44,14 +44,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef AAPIDLL_USING
+#pragma comment(lib, "asyncore_dll.lib")
 #ifdef _DEBUG
+#ifdef _DLL
 #pragma comment(lib, "asynsdk_mini-MDd.lib")
 #else
-#pragma comment(lib, "asynsdk_mini-MD.lib")
+#pragma comment(lib, "asynsdk_mini-MTd.lib")
 #endif
-#pragma comment(lib, "asyncore_dll.lib")
+#else //
+#ifdef _DLL
+#pragma comment(lib, "asynsdk_mini-MD.lib")
+#else
+#pragma comment(lib, "asynsdk_mini-MT.lib")
+#endif
+#endif
+#else
+#ifdef _DLL
+#pragma comment(lib, "asynframe-MD_lib.lib")
 #else
 #pragma comment(lib, "asynframe-MT_lib.lib")
+#endif
 #endif
 STDAPI_(extern HRESULT) Initialize( /*[in ]*/IAsynMessageEvents *param1, /*[in ]*/IUnknown *param2 );
 STDAPI_(extern HRESULT) Destory();
