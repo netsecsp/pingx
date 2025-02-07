@@ -10,7 +10,7 @@
 #endif
 #endif
 
-#define STRING_UPDATETIME "12/23/2024"
+#define STRING_UPDATETIME "02/08/2025"
 
 #include <iostream>
 #include <tchar.h>
